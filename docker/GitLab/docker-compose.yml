@@ -1,0 +1,32 @@
+gitlab:
+  container_name: gitlab
+  image: gitlab/gitlab-ce
+  restart: always
+  hostname: 'gitlab'
+  ports:
+    - "18531:80"
+    - "18532:443"
+    - "18533:22"
+  volumes:
+    - /data/data/GitLab/data:/var/opt/gitlab
+    - /data/data/GitLab/log:/var/log/gitlab
+    - /data/data/GitLab/config:/etc/gitlab
+  environment:
+    GITLAB_OMNIBUS_CONFIG: |
+      # worker process ( down memory cost ), min = 2
+      unicorn['worker_processes'] = 2
+      gitlab_rails['time_zone'] = 'Asia/Shanghai'
+      postgresql['enable'] = false
+      gitlab_rails['db_host'] = '192.168.101.251'
+      gitlab_rails['db_port'] = 5432
+      gitlab_rails['db_username'] = "postgres"
+      gitlab_rails['db_password'] = "postgres"
+      gitlab_rails['db_encoding'] = "utf8"
+      gitlab_rails['db_database'] = "gitlab"
+      # backup configuration ( default: 7 days )
+      gitlab_rails['backup_keep_time'] = 604800
+    GITLAB_BACKUPS: "daily"
+    GITLAB_SIGNUP: "true"
+    GITLAB_ROOT_PASSWORD: "admin123"
+    GITLAB_GRAVATAR_ENABLED: "true"
+
